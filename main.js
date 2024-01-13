@@ -3,22 +3,12 @@ statusOne = ""
 objects = []
 video = ""
 
-function preload() {
-    som = loadSound("alarme.mp3")
-}
-
 function setup() {
     canvas = createCanvas(380, 380)
     canvas.center()
     video = createCapture(VIDEO)
     video.size(380, 380)
     video.hide()
-}
-
-function modelLoaded() {
-    console.log("modelo iniciado")
-    statusOne = true
-    objectDetector.detector(video, gotResults)
 }
 
 function gotResults(error, results) {
@@ -28,6 +18,13 @@ function gotResults(error, results) {
     console.log(results)
     objects = results
 }
+
+function preload() {
+    som = loadSound("alarme.mp3")
+    somVerdadeiro = loadSound("alarme.mp3")
+    somInexistente = loadSound("nada.mp3")
+}
+
 function draw() {
     image(video, 0, 0, 380, 380);
 
@@ -48,11 +45,22 @@ function draw() {
             stroke(r, g, b);
             rect(objects[i].x, objects[i].y, objects[i].width, objects[i].height);
 
-            if (objects[i] == "person") {
+            if (objects[i].label == "person") {
              som.play()
+             som = somInexistente
+             console.log("foi detectato um suspeito!")
             }
+            if (objects[i].label != "person") {
+                som = somVerdadeiro
+                console.log("algo foi detectado")
+               }
         }
     }
+}
+
+function modelLoaded() {
+    console.log("modelo iniciado")
+    statusOne = true
 }
 
 function start() {
